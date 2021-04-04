@@ -1,0 +1,49 @@
+version: "3.0"
+
+services:
+  app:
+    image: regnerisch:nginx
+    env_file:
+      - .env
+    volumes:
+      - '.:/var/www/html'
+    depends_on:
+      - php
+      - mysql
+    networks:
+      - app
+    labels:
+      - 'traefik.http.routers.api.rule=Host(`${APP_DOMAIN}`)'
+      - 'traefik.docker.network=docker-tools_traefik'
+
+  php:
+    image: regnerisch:php-8.0-fpm-dev
+    volumes:
+      - '.:/var/www/html'
+    networks:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+    volumes:
+      - 'mysqlvolume:/var/lib/mysql'
+    networks:
+      - app
+
+volumes:
+  mysqlvolume:
+    driver: local
+
+networks:
+  traefik:
+    external:
+      name: docker-tools_traefik
+  app:
+    driver: bridge
