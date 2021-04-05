@@ -2,24 +2,25 @@ version: "3.0"
 
 services:
   app:
-    image: regnerisch:nginx
+    image: jregner/nginx:1.19
     env_file:
       - .env
     volumes:
-      - '.:/var/www/html'
+      - './src:/var/www/html'
     depends_on:
       - php
       - mysql
     networks:
       - app
     labels:
-      - 'traefik.http.routers.api.rule=Host(`${APP_DOMAIN}`)'
+      - 'traefik.http.routers.api.rule=Host(`${DOMAIN}`)'
       - 'traefik.docker.network=docker-tools_traefik'
 
   php:
-    image: regnerisch:php-8.0-fpm-dev
+    image: jregner/php:8.0-fpm-dev
+    user: "${USER}:${GROUP}"
     volumes:
-      - '.:/var/www/html'
+      - './src:/var/www/html'
     networks:
       - app
 

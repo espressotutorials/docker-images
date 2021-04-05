@@ -16,8 +16,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install -j$(nproc) mbstring \
     && docker-php-ext-install -j$(nproc) zip \
     && docker-php-ext-install -j$(nproc) dom \
-    && docker-php-ext-install -j$(nproc) pdo_mysql
+    && docker-php-ext-install -j$(nproc) pdo_mysql \
+    && docker-php-ext-install -j$(nproc) intl
 
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/conf.d/php.ini"
+COPY ["./php.ini", "$PHP_INI_DIR/conf.d/php.ini"]
 
 CMD ["php-fpm"]
