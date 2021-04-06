@@ -7,18 +7,20 @@ services:
       - .env
     volumes:
       - './src:/var/www/html'
+    working_dir: '/var/www/html'
     depends_on:
       - php
       - mysql
     networks:
       - app
+      - traefik
     labels:
-      - 'traefik.http.routers.api.rule=Host(`${DOMAIN}`)'
+      - 'traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`)'
       - 'traefik.docker.network=docker-tools_traefik'
 
   php:
     image: jregner/php:8.0-fpm-dev
-    user: "${USER}:${GROUP}"
+    user: "${USER_UID}:${GROUP_UID}"
     volumes:
       - './src:/var/www/html'
     networks:
