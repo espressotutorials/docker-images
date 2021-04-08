@@ -1,0 +1,20 @@
+version: '3.0'
+
+services:
+  app:
+    image: jregner/docsify:latest
+    env_file:
+      - .env
+    user: '${USER_UID}:${GROUP_UID}'
+    volumes:
+      - './docs:/docs'
+    networks:
+      - traefik
+    labels:
+      - 'traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${DOMAIN}`)'
+      - 'traefik.docker.network=docker-tools_traefik'
+
+networks:
+  traefik:
+    external:
+      name: docker-tools_traefik
