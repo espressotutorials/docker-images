@@ -1,3 +1,3 @@
 #!/usr/bin/with-contenv sh
 
-exec php8 /var/www/html/artisan queue:work
+exec php /app/artisan queue:work
